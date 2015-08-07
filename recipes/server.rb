@@ -29,12 +29,25 @@ directory node['rsyslog']['log_dir'] do
   recursive true
 end
 
-template "#{node['rsyslog']['config_prefix']}/rsyslog.d/35-server-per-host.conf" do
-  source   '35-server-per-host.conf.erb'
-  owner    'root'
-  group    'root'
-  mode     '0644'
-  notifies :restart, "service[#{node['rsyslog']['service_name']}]"
+if node['rsyslog']['server_per_host']
+  template "#{node['rsyslog']['config_prefix']}/rsyslog.d/35-server-per-host.conf" do
+    source   '35-server-per-host.conf.erb'
+    owner    'root'
+    group    'root'
+    mode     '0644'
+    notifies :restart, "service[#{node['rsyslog']['service_name']}]"
+  end
+end
+
+node['rsyslog']['server_program_names'].each do |program|
+  template "#{node['rsyslog']['config_prefix']}/rsyslog.d/#{program}.conf" do
+    source    'program.conf.erb'
+    owner     'root'
+    group     'root'
+    mode      '0644'
+    variables program: program
+    notifies :restart, "service[#{node['rsyslog']['service_name']}]"
+  end
 end
 
 file "#{node['rsyslog']['config_prefix']}/rsyslog.d/remote.conf" do

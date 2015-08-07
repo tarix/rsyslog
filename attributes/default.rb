@@ -51,6 +51,10 @@ default['rsyslog']['use_local_ipv4']            = false
 default['rsyslog']['allow_non_local']           = false
 default['rsyslog']['additional_directives'] = {}
 
+# server: per host config
+default['rsyslog']['server_per_host']           = true
+default['rsyslog']['server_program_names']      = []
+
 # The most likely platform-specific attributes
 default['rsyslog']['service_name']              = 'rsyslog'
 default['rsyslog']['user']                      = 'root'
